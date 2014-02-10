@@ -1,26 +1,108 @@
-.knob{
-    width: 104px; 
-    height: 66px; 
-    /*position: absolute; */
-    vertical-align: middle; 
-    margin-top: 66px; 
-    margin-left: -152px; 
-    border: 0px; 
-    background-image: none;
-    font-weight: bold;
-    font-style: normal;
-    font-variant: normal;
-    font-size: 40px;
-    line-height: normal;
-    font-family: Arial;
-    text-align: center;
-    color: rgb(135, 206, 235);
-    padding: 0px;
-    -webkit-appearance: none;
-    background-position: initial;
-    background-repeat: initial;
+#lean_overlay {
+    position: fixed;
+    z-index:100;
+    top: 0px;
+    left: 0px;
+    height:100%;
+    width:100%;
+    background: #000;
+    display: none;
 }
 
 #plantillas{
     display:none;
+}
+
+
+html, body{
+    height:100%;
+    margin: 0px;
+}
+
+#trocador {
+    height: 100%;
+}
+
+#pantalla_mercado {
+    display: none;
+    height: 100%;
+    position: relative;
+}
+
+.barra_titulo {
+    background-color: gray;
+    color:orange;
+    text-align: center;
+    font-size: 25px;
+    font-weight: bold;
+    position: relative;
+    top:0px;
+    left:0px;
+    right:0px;
+    height:30px;
+}
+
+#lista_mercaderes {
+    position: absolute;
+    width: 100%;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    background-color: gray;
+}
+
+.barra_datos_mercader,
+.mercader_en_lista,
+.datos_usuario{
+    height:30px;
+    color:orange;
+    font-weight: bold;
+    text-align: center;
+    border: 1px solid black;
+    cursor: pointer;
+    padding-top: 9px;
+    background-color: gray;
+}
+
+.mercader_en_lista:hover{
+    background-color: blue;
+}
+
+.panel_trueque {
+    position: absolute;
+    top:30px;
+    bottom:0px;
+    width: 50%;
+}
+
+#panel_propio {
+    left:0px;
+}
+
+#panel_ajeno {
+    right: 0px;
+}
+
+.producto_en_inventario {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    background-color: gray;
+    margin: 2px;
+    text-align: center;
+    box-sizing: border-box;
+    border-radius: 5px;
+    transition: all .5s;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.producto_en_inventario:hover {
+    background-color: blue;
+}
+
+#panel_alta_producto {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
 }

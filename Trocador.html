@@ -8,18 +8,45 @@
 	</head>
 	
 	<body>	
-        <div id="panel_control_bt">
-            <div id="status"></div>             
-            <div id="knobs"></div>             
+        <div id="trocador">
+            <div id="pantalla_login">
+                <div class="barra_titulo"> Login </div>
+                <input id=nombre_usuario type="text"/>
+                <input id="boton_ingresar" type="button" value="Ingresar"/>
+            </div>
+            <div id="pantalla_mercado">
+                <div class="barra_titulo"> Mercado </div>
+                <div id="panel_propio" class="panel_trueque">
+                    <div class="datos_usuario"></div>
+                    <div id="inventario"></div>
+                    <div id="panel_alta_producto">
+                        <input id="txt_nombre_producto_add" type="text"/>
+                        <input id="btn_add_producto" type="button" value="+"/>
+                    </div>
+                </div>
+                <div id="panel_ajeno" class="panel_trueque">
+                    <div id="selector_mercaderes" class="datos_usuario">
+                        <div id="leyenda_cuando_no_hay_seleccionado">Elegí con quien comerciar...</div>
+                        <div id="leyenda_cuando_no_hay_mercaderes">No hay nadie...</div>
+                        <div id="mercader_seleccionado"></div>
+                        <div id="lista_mercaderes"></div>
+                    </div>
+                    <div id="inventario"></div>
+                </div>
+            </div>
         </div>
     </body>    
     
     <div id="plantillas">
-        <input type="text" id="knob" class="knob"/>
+        <div class="mercader_en_lista"></div>
+        <div class="panel_inventario"></div>
+        <div class="producto_en_inventario"></div>
     </div>
-    <script type="text/javascript" src="jquery-1.10.2.min.js"></script> 
-    <script type="text/javascript" src="jquery.knob.js"></script> 
     
+    <script type="text/javascript" src="jquery-1.10.2.min.js"></script> 
+    <script type="text/javascript" src="underscore-min.js"></script> 
+    <script type="text/javascript" src="masonry.pkgd.min.js"></script> 
+
     <script type="text/javascript" src="VortexJS/FiltrosYTransformaciones.js"></script>
     <script type="text/javascript" src="VortexJS/NodoClienteHTTP.js"></script> 
     <script type="text/javascript" src="VortexJS/ClonadorDeObjetos.js"></script> 
@@ -35,9 +62,15 @@
     <script type="text/javascript" src="VortexJS/NodoAdaptadorBluetoothArduino.js"></script> 
     <script type="text/javascript" src="VortexJS/Vortex.js"></script> 
     
+    <script type="text/javascript" src="Main.js"></script> 
     <script type="text/javascript" src="Trocador.js"></script> 
-    <script type="text/javascript" src="PanelDeMandosBT.js"></script> 
-    <script type="text/javascript" src="VortexKnob.js"></script> 
+    <script type="text/javascript" src="PantallaLogin.js"></script> 
+    <script type="text/javascript" src="PantallaMercado.js"></script> 
+    <script type="text/javascript" src="Mercader.js"></script> 
+    <script type="text/javascript" src="VistaDeMercaderEnLista.js"></script> 
+    <script type="text/javascript" src="SelectorDeMercaderes.js"></script> 
+    <script type="text/javascript" src="PanelInventario.js"></script> 
+    <script type="text/javascript" src="VistaDeUnProductoEnInventario.js"></script> 
 
     <script type="text/javascript" src="phonegap.js"></script>
 </html>

@@ -1,5 +1,5 @@
 var onDeviceReady = function() {     
-    panel = new PanelDeMandosBT();
+    panel = new Trocador();
 };
 
 $(document).ready(function() {  

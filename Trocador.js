@@ -1,41 +1,35 @@
-var PanelDeMandosBT = function(opt){
+var Trocador = function(opt){
     $.extend(true, this, opt);
     this.start();
 };
 
-PanelDeMandosBT.prototype.start = function(){
+Trocador.prototype.start = function(){
     var _this = this;
-    this.ui = $("#panel_control_bt");
-    this.txt_status = this.ui.find("#status"); 
+    this.ui = $("#trocador");
+    var pantalla_login = new PantallaLogin({
+        alIngresarUsuario:function(nombre_mercader){
+            _this.usuario = new Mercader({
+                nombre: nombre_mercader,
+                inventario: [
+                    {nombre:"martillo"},
+                    {nombre:"gallina"},
+                    {nombre:"termo"}
+                ]
+            });
+            _this.pantalla_mercado = new PantallaMercado({usuario: _this.usuario });
+            _this.pantalla_mercado.mostrar();
+        }
+    });
     
     vx.start({verbose:true});
     
     vx.conectarPorHTTP({
-        url:'http://router-vortex.herokuapp.com',
-        intervalo_polling: 200
+        //url:'http://router-vortex.herokuapp.com',
+        url:'http://localhost:3000',
+        intervalo_polling: 50
     });    
-    
-//    vx.conectarPorWebSockets({
-//        url:'https://router-vortex.herokuapp.com'
-//        //url:'http://localhost:3000'
-//    });
-    
-    vx.conectarPorBluetoothConArduino({
-        mac: '20:13:06:14:05:97',
-        alConectar:function(){
-            _this.txt_status.text('conectado a 20:13:06:14:05:97');
-        },
-        onErrorAlConectar:function(){
-            _this.txt_status.text('error al conectar a 20:13:06:14:05:97');
-        }
-    })
-    
-    this.panelKnobs = this.ui.find("#knobs");
-    
-    var knob0 = new VortexKnob({id:0});
-    knob0.dibujarEn(this.panelKnobs);
-    
-    var knob1 = new VortexKnob({id:1});
-    knob1.dibujarEn(this.panelKnobs);
-    
+/*    vx.conectarPorWebSockets({
+        //url:'https://router-vortex.herokuapp.com' 
+        url:'http://localhost:3000'
+    });*/    
 };
