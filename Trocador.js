@@ -13,6 +13,14 @@ Trocador.prototype.start = function(){
             });
             _this.pantalla_mercado = new PantallaMercado({usuario: _this.usuario });
             _this.pantalla_mercado.mostrar();
+            vx.pedirMensajes({
+                filtro: new FiltroXEjemplo({
+                    para:_this.usuario.nombre
+                }),
+                callback: function(mensaje){
+                    //recibo todos los mensajes que son para mi, este filtro debería simplificar todas las respuestas particulares
+                }
+            });  
         }
     });
     
@@ -27,4 +35,6 @@ Trocador.prototype.start = function(){
         url:'https://router-vortex.herokuapp.com' 
         //url:'http://localhost:3000'
     });   
+    
+
 };

@@ -16,12 +16,23 @@ SelectorDeMercaderes.prototype.start = function(){
     this.divListaMercaderes.hide();
     this.leyenda_cuando_no_hay_seleccionado.hide();
     
+    this.leyenda_cuando_no_hay_mercaderes.click(function(){
+        vx.enviarMensaje({
+            tipoDeMensaje:"trocador.pedidoDeIntegrantesDelMercado",
+            pide:_this.usuario.nombre
+        });
+    });
+    
     this.leyenda_cuando_no_hay_seleccionado.click(function(){
         _this.divListaMercaderes.show();
     });
     
     this.divMercaderSeleccionado.click(function(){
         _this.divListaMercaderes.show();
+        vx.enviarMensaje({
+            tipoDeMensaje:"trocador.pedidoDeIntegrantesDelMercado",
+            pide:_this.usuario.nombre
+        });
     });
     
     vx.pedirMensajes({
