@@ -73,6 +73,8 @@ html, body{
     top:30px;
     bottom:0px;
     width: 50%;
+    box-sizing: border-box;
+    border: 2px solid;
 }
 
 #panel_propio {

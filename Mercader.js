@@ -1,5 +1,6 @@
 
 var Mercader = function(opt){
+    this.inventario=[];
     $.extend(true, this, opt);
     this.start();
 };

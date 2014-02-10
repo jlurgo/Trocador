@@ -9,12 +9,7 @@ Trocador.prototype.start = function(){
     var pantalla_login = new PantallaLogin({
         alIngresarUsuario:function(nombre_mercader){
             _this.usuario = new Mercader({
-                nombre: nombre_mercader,
-                inventario: [
-                    {nombre:"martillo"},
-                    {nombre:"gallina"},
-                    {nombre:"termo"}
-                ]
+                nombre: nombre_mercader
             });
             _this.pantalla_mercado = new PantallaMercado({usuario: _this.usuario });
             _this.pantalla_mercado.mostrar();
