@@ -52,11 +52,12 @@ Trocador = {
             }),
             callback: function(mensaje){
                 if(mensaje.de == _this.usuario.nombre) return;
-                _this.nuevoMercader(mensaje.de);
+                _this.nuevoMercader(mensaje.de, mensaje.inventario);
                 vx.enviarMensaje({
                     tipoDeMensaje: "trocador.respuestaAAvisoDeIngreso",
                     de: _this.usuario.nombre,
-                    para: mensaje.de
+                    para: mensaje.de,
+                    inventario: _this.usuario.inventario
                 });
             }
         });  
@@ -67,41 +68,15 @@ Trocador = {
                 para: this.usuario.nombre
             }),
             callback: function(mensaje){
-                _this.nuevoMercader(mensaje.de);
+                _this.nuevoMercader(mensaje.de, mensaje.inventario);
             }
         });
         
         vx.enviarMensaje({
             tipoDeMensaje: "trocador.avisoDeIngreso",
-            de: this.usuario.nombre
+            de: this.usuario.nombre,
+            inventario:this.usuario.inventario
         });
-        
-        vx.pedirMensajes({
-            filtro: new FiltroXEjemplo({
-                tipoDeMensaje:"trocador.pedidoDeInventario",
-                para: this.usuario.nombre
-            }),
-            callback: function(mensaje){
-                vx.enviarMensaje({
-                    tipoDeMensaje: "trocador.respuestaAPedidoDeInventario",
-                    inventario: _this.usuario.inventario,
-                    de: _this.usuario.nombre,
-                    para: mensaje.de
-                });
-            }
-        });  
-
-        vx.pedirMensajes({
-            filtro: new FiltroXEjemplo({
-                tipoDeMensaje:"trocador.respuestaAPedidoDeInventario",
-                para: this.usuario.nombre
-            }),
-            callback: function(mensaje){
-                var mercader = _.findWhere(_this.mercaderes, {nombre: mensaje.de});
-                mercader.inventario = mensaje.inventario;
-                mercader.yaMandoInventario = true;
-            }
-        }); 
         
         vx.pedirMensajes({
             filtro: new FiltroXEjemplo({
@@ -110,7 +85,7 @@ Trocador = {
             callback: function(mensaje){
                 if(mensaje.de == _this.usuario.nombre) return;
                 var mercader = _.findWhere(_this.mercaderes, {nombre: mensaje.de});
-                if(mercader.yaMandoInventario) mercader.inventario.push(mensaje.producto);
+                mercader.inventario.push(mensaje.producto);
                 if(_this.mercaderSeleccionado === undefined) return;
                 if(_this.mercaderSeleccionado.nombre == mercader.nombre) _this.panelInventarioDelOtro.actualizar();
             }
@@ -127,13 +102,12 @@ Trocador = {
                 _this.panelInventarioDelOtro.setMercader(mercader);
                 _this.panelInventarioDelOtro.setItemsTrueque(mercader.trueque.suyo);
                 _this.panelInventarioUsuario.setItemsTrueque(mercader.trueque.mio);
-                
-                if(mercader.yaMandoInventario) return;
-                vx.enviarMensaje({
-                    tipoDeMensaje:"trocador.pedidoDeInventario",
-                    de:_this.usuario.nombre,
-                    para:mercader.nombre
-                });
+                if(mercader.trueque.envioPropuesta == "el") {_this.btnProponerTrueque.hide();
+                                                             _this.btnAceptarTrueque.show();}
+                if(mercader.trueque.envioPropuesta == "ninguno") {_this.btnProponerTrueque.show();
+                                                             _this.btnAceptarTrueque.hide();}
+                if(mercader.trueque.envioPropuesta == "yo") {_this.btnProponerTrueque.hide();
+                                                             _this.btnAceptarTrueque.hide();}
             }
         });
 
@@ -164,6 +138,8 @@ Trocador = {
                 mercader.trueque.mio = mensaje.pido;
                 mercader.trueque.suyo = mensaje.doy;
             
+                mercader.trueque.envioPropuesta = "el";
+                
                 if(_this.mercaderSeleccionado === undefined) return;
                 if(_this.mercaderSeleccionado.nombre != mercader.nombre) return;
                 _this.panelInventarioDelOtro.setItemsTrueque(mercader.trueque.suyo);
@@ -182,6 +158,7 @@ Trocador = {
                 pido: _this.mercaderSeleccionado.trueque.suyo,
                 doy: _this.mercaderSeleccionado.trueque.mio
             });
+            _this.mercaderSeleccionado.trueque.envioPropuesta = "yo";
             _this.btnProponerTrueque.hide(); 
         });
         
@@ -222,21 +199,26 @@ Trocador = {
         this.btnRefrescarMercaderes.click(function(){
             vx.enviarMensaje({
                 tipoDeMensaje: "trocador.avisoDeIngreso",
-                de: _this.usuario.nombre
-            });        
+                de: _this.usuario.nombre,
+                inventario:_this.usuario.inventario
+            });     
         });
         
         this.pantalla_mercado.show();
     },
-    nuevoMercader: function(nombre){
-        if(_.findWhere(this.mercaderes, {nombre:nombre}) !== undefined) return;
+    nuevoMercader: function(nombre, inventario){
+        var mercader = _.findWhere(this.mercaderes, {nombre:nombre});
+        if( mercader !== undefined) {
+            mercader.inventario = inventario;
+            return;
+        }
         this.mercaderes.push({
             nombre: nombre,
-            inventario:[],
-            yaMandoInventario: false,
+            inventario:inventario||[],
             trueque: {
                 suyo: [],
-                mio: []
+                mio: [],
+                envioPropuesta: "ninguno"
             }
         });
         SelectorDeMercaderes.actualizar();
