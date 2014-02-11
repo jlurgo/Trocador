@@ -15,8 +15,8 @@ Trocador = {
         vx.start({verbose:true});
 
         vx.conectarPorHTTP({
-            url:'http://router-vortex.herokuapp.com',
-            //url:'http://localhost:3000',
+            //url:'http://router-vortex.herokuapp.com',
+            url:'http://localhost:3000',
             intervalo_polling: 50
         });    
 //        vx.conectarPorWebSockets({
@@ -52,7 +52,7 @@ Trocador = {
             }),
             callback: function(mensaje){
                 if(mensaje.de == _this.usuario.nombre) return;
-                _this.nuevoMercader(mensaje.de, mensaje.inventario);
+                _this.agregarMercader(mensaje.de, mensaje.inventario);
                 vx.enviarMensaje({
                     tipoDeMensaje: "trocador.respuestaAAvisoDeIngreso",
                     de: _this.usuario.nombre,
@@ -68,7 +68,7 @@ Trocador = {
                 para: this.usuario.nombre
             }),
             callback: function(mensaje){
-                _this.nuevoMercader(mensaje.de, mensaje.inventario);
+                _this.agregarMercader(mensaje.de, mensaje.inventario);
             }
         });
         
@@ -86,8 +86,22 @@ Trocador = {
                 if(mensaje.de == _this.usuario.nombre) return;
                 var mercader = _.findWhere(_this.mercaderes, {nombre: mensaje.de});
                 mercader.inventario.push(mensaje.producto);
-                if(_this.mercaderSeleccionado === undefined) return;
-                if(_this.mercaderSeleccionado.nombre == mercader.nombre) _this.panelInventarioDelOtro.actualizar();
+                _this.panelInventarioDelOtro.actualizar();
+            }
+        });  
+        
+        vx.pedirMensajes({
+            filtro: new FiltroXEjemplo({
+                tipoDeMensaje:"trocador.avisoDeBajaDeProducto"
+            }),
+            callback: function(mensaje){
+                if(mensaje.de == _this.usuario.nombre) return;
+                var mercader = _.findWhere(_this.mercaderes, {nombre: mensaje.de});
+                
+                mercader.inventario = $.grep(mercader.inventario, function(prod){
+                    return mensaje.producto.id != prod.id;
+                });
+                _this.panelInventarioDelOtro.setMercader(_this.mercaderSeleccionado);
             }
         });  
         
@@ -114,17 +128,7 @@ Trocador = {
         this.btnAgregarProducto = this.pantalla_mercado.find("#btn_add_producto");
         this.txt_nombre_producto_add = this.pantalla_mercado.find("#txt_nombre_producto_add");
         this.btnAgregarProducto.click(function(){
-            var producto = {
-                nombre:_this.txt_nombre_producto_add.val()
-            };
-            producto.id = _this.usuario.inventario.length;
-            _this.usuario.inventario.push(producto);
-            _this.panelInventarioUsuario.actualizar();
-            vx.enviarMensaje({
-                tipoDeMensaje:"trocador.avisoDeNuevoProducto",
-                de: _this.usuario.nombre,
-                producto: producto
-            });
+            _this.agregarProducto({nombre:_this.txt_nombre_producto_add.val()});
             _this.txt_nombre_producto_add.val("");
         });
         
@@ -206,10 +210,11 @@ Trocador = {
         
         this.pantalla_mercado.show();
     },
-    nuevoMercader: function(nombre, inventario){
+    agregarMercader: function(nombre, inventario){
         var mercader = _.findWhere(this.mercaderes, {nombre:nombre});
         if( mercader !== undefined) {
             mercader.inventario = inventario;
+            this.panelInventarioDelOtro.actualizar();
             return;
         }
         this.mercaderes.push({
@@ -223,26 +228,40 @@ Trocador = {
         });
         SelectorDeMercaderes.actualizar();
     },
+    agregarProducto: function(producto){
+        producto.id = this.usuario.inventario.length;
+        this.usuario.inventario.push(producto);
+        this.panelInventarioUsuario.actualizar();
+        vx.enviarMensaje({
+            tipoDeMensaje:"trocador.avisoDeNuevoProducto",
+            de: this.usuario.nombre,
+            producto: producto
+        });
+    },
+    quitarProducto: function(producto){
+        this.usuario.inventario = $.grep(this.usuario.inventario, function(prod){
+            return producto.id != prod.id;
+        });
+        this.panelInventarioUsuario.actualizar();
+        vx.enviarMensaje({
+            tipoDeMensaje:"trocador.avisoDeBajaDeProducto",
+            de: this.usuario.nombre,
+            producto: producto
+        });
+    },
     concretarTruequeCon: function(mercader){
         var _this = this;
         _.each(mercader.trueque.mio, function(pt){
-            _this.usuario.inventario = _.reject(_this.usuario.inventario, function(pi){
-                return pt.id == pi.id;
-            });
-            pt.id=mercader.inventario.length;
-            mercader.inventario.push(pt);
+            _this.quitarProducto(pt);
         });
         _.each(mercader.trueque.suyo, function(pt){
-            mercader.inventario = _.reject(mercader.inventario, function(pi){
-                return pt.id == pi.id;
-            });
-            pt.id=_this.usuario.inventario.length;
-            _this.usuario.inventario.push(pt);
+            _this.agregarProducto(pt)
         });
         mercader.trueque.mio.length = 0;
         mercader.trueque.suyo.length = 0;   
         this.btnAceptarTrueque.hide();
         this.btnProponerTrueque.show();
+        mercader.trueque.envioPropuesta = "ninguno";
     }
     
 };

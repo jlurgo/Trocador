@@ -6,6 +6,7 @@ var PanelInventario = function(opt){
 PanelInventario.prototype.start = function(){
     var _this = this;
     this.productosEnTrueque = [];
+    this.mercader = {nombre:"", inventario:[]};
     this.ui = $("#plantillas").find(".panel_inventario").clone(); 
 };
 
