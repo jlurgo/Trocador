@@ -5,50 +5,42 @@ var PanelInventario = function(opt){
 
 PanelInventario.prototype.start = function(){
     var _this = this;
+    this.productosEnTrueque = [];
     this.ui = $("#plantillas").find(".panel_inventario").clone(); 
-    vx.pedirMensajes({
-        filtro: new FiltroXEjemplo({
-            tipoDeMensaje: "trocador.inventario",
-            mercader: this.mercader.nombre,
-            para: this.usuario.nombre
-        }),
-        callback: function(mensaje){
-            _.each(mensaje.inventario, function(producto){
-                _this.agregarProducto(producto);
-            });            
-        }
-    });  
-    
-    vx.pedirMensajes({
-        filtro: new FiltroXEjemplo({
-            tipoDeMensaje: "trocador.nuevoProducto",
-            mercader: this.mercader.nombre
-        }),
-        callback: function(mensaje){
-            _this.agregarProducto(mensaje.producto);           
-        }
-    });  
-    
-    vx.enviarMensaje({
-        tipoDeMensaje:"trocador.pedidoDeInventario",
-        mercader:this.mercader.nombre,
-        pide: this.usuario.nombre
-    });
-};
-
-PanelInventario.prototype.agregarProducto = function(un_producto){
-    var vista = new VistaDeUnProductoEnInventario({producto:un_producto});
-    vista.dibujarEn(this.ui);
 };
 
 PanelInventario.prototype.dibujarEn = function(un_panel){
     un_panel.append(this.ui);  
 };
 
-PanelInventario.prototype.mostrar = function(){
-     this.ui.show();
+PanelInventario.prototype.actualizar = function(){
+    var _this = this;
+    this.ui.empty();
+    _.each(this.mercader.inventario, function(producto){
+        var vista = new VistaDeUnProductoEnInventario({
+            producto: producto, 
+            seleccionadoParaTrueque: (_.findWhere(_this.productosEnTrueque, {id: producto.id})!== undefined),
+            alSeleccionarParaTrueque: function(){
+                _this.productosEnTrueque.push(producto);
+                _this.alCambiarLosProductosDelTrueque();
+            },
+            alDesSeleccionarParaTrueque: function(){
+                _.each(_this.productosEnTrueque, function(p, i){
+                    if(producto.id == p.id) _this.productosEnTrueque.splice(i, 1);
+                });
+                _this.alCambiarLosProductosDelTrueque();
+            }
+        });
+        vista.dibujarEn(_this.ui);
+    }) 
 };
 
-PanelInventario.prototype.ocultar = function(){
-    this.ui.hide();
+PanelInventario.prototype.setMercader = function(mercader){
+    this.mercader = mercader;
+    this.actualizar();
+};
+
+PanelInventario.prototype.setItemsTrueque = function(productos){
+    this.productosEnTrueque = productos;
+    this.actualizar();
 };

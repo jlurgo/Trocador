@@ -103,8 +103,47 @@ html, body{
     background-color: blue;
 }
 
+.producto_seleccionado_para_trueque{
+    background-color: green;
+}
+
+.producto_seleccionado_para_trueque:hover{
+    background-color: yellow;
+}
+
 #panel_alta_producto {
     position: absolute;
     bottom: 0px;
     width: 100%;
+}
+
+
+.boton_trueque {
+    position: absolute;
+    bottom: 0px;
+    width: 100%;
+    cursor: pointer;
+    text-align: center;
+}
+
+.boton_trueque:hover{
+    background-color: red;
+}
+
+
+#btnProponerTrueque {
+    background-color: yellow;
+}
+
+#btnAceptarTrueque {
+    background-color: green;
+    display: none;
+}
+
+#btn_refrescar {
+    position:absolute;
+    right: 5px;
+    top: 5px;
+    height:30px;
+    width: 30px;
 }
