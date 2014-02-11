@@ -27,8 +27,8 @@ Trocador.prototype.start = function(){
     vx.start({verbose:true});
     
 //    vx.conectarPorHTTP({
-//        //url:'http://router-vortex.herokuapp.com',
-//        url:'http://localhost:3000',
+//        url:'http://router-vortex.herokuapp.com',
+//        //url:'http://localhost:3000',
 //        intervalo_polling: 50
 //    });    
     vx.conectarPorWebSockets({
