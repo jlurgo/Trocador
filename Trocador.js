@@ -28,7 +28,7 @@ Trocador = {
     alIngresarAlMercado:function(){
         var _this = this;
         this.mercaderes = [];
-        this.maximo_id_de_producto
+        this.maximo_id_de_producto = 0;
             
         this.panelInventarioUsuario = new PanelInventario();
         this.panelInventarioUsuario.dibujarEn(this.ui.find("#panel_propio #inventario"));
