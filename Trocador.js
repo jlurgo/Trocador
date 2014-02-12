@@ -28,6 +28,8 @@ Trocador = {
     alIngresarAlMercado:function(){
         var _this = this;
         this.mercaderes = [];
+        this.maximo_id_de_producto
+            
         this.panelInventarioUsuario = new PanelInventario();
         this.panelInventarioUsuario.dibujarEn(this.ui.find("#panel_propio #inventario"));
         this.panelInventarioUsuario.setMercader(this.usuario);
@@ -228,8 +230,9 @@ Trocador = {
         });
         SelectorDeMercaderes.actualizar();
     },
-    agregarProducto: function(producto){
-        producto.id = this.usuario.inventario.length;
+    agregarProducto: function(producto){        
+        producto.id = this.maximo_id_de_producto + 1;
+        this.maximo_id_de_producto++;
         this.usuario.inventario.push(producto);
         this.panelInventarioUsuario.actualizar();
         vx.enviarMensaje({
