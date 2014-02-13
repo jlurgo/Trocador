@@ -105,6 +105,7 @@ Trocador = {
         });
     },
     setupVortex: function(){
+        var _this = this;
         vx.pedirMensajes({
             filtro: new FiltroXEjemplo({
                 tipoDeMensaje:"trocador.avisoDeIngreso"
