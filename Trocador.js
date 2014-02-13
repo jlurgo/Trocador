@@ -33,20 +33,12 @@ Trocador = {
         var _this = this;
         this.setupVortex();
         
-        vx.enviarMensaje({
-            tipoDeMensaje: "trocador.avisoDeIngreso",
-            de: this.usuario.nombre,
-            inventario:this.usuario.inventario
-        });
-        
         this.mercaderes = [];
         this.maxIdDeProductoGenerado = 0;
         this.mercaderSeleccionado = {nombre:"", inventario:[], trueque: {mio:[], suyo:[]}};
         
         this.panelInventarioUsuario = this.ui.find("#panel_propio .panel_inventario");        
         this.panelInventarioDelOtro = this.ui.find("#panel_ajeno .panel_inventario");
-
-    
         
         this.pantalla_mercado =  $("#pantalla_mercado");
         this.barraDatosUsuario = this.pantalla_mercado.find("#panel_propio .datos_usuario");
@@ -105,6 +97,12 @@ Trocador = {
         
         this.dibujarInventarios();
         this.pantalla_mercado.show();
+        
+        vx.enviarMensaje({
+            tipoDeMensaje: "trocador.avisoDeIngreso",
+            de: this.usuario.nombre,
+            inventario:this.usuario.inventario
+        });
     },
     setupVortex: function(){
         vx.pedirMensajes({
